@@ -1,1 +1,9 @@
 C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\bin\Debug\CourseProject2017.exe.config
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.csprojResolveAssemblyReference.cache
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.Form1.resources
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.Properties.Resources.resources
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.csproj.GenerateResource.Cache
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\bin\Debug\CourseProject2017.exe
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\bin\Debug\CourseProject2017.pdb
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.exe
+C:\Users\Вадим\Documents\University\ООП\CourseProject2017\CourseProject2017\obj\Debug\CourseProject2017.pdb

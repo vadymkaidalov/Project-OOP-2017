@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CourseProject2017.BLL;
 
 namespace CourseProject2017
 {
@@ -14,6 +15,8 @@ namespace CourseProject2017
         [STAThread]
         static void Main()
         {
+            Shop shop = new Shop();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

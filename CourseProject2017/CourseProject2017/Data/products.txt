@@ -1,0 +1,13 @@
+﻿3
+Meat
+15.99
+true
+4
+Milk
+234.234
+true
+7.3
+Fish
+2
+false
+3
