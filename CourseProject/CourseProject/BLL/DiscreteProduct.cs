@@ -19,6 +19,14 @@ namespace CourseProject.BLL
                 return "шт";
             }
         }
+        
+        public override bool IsDiscrete
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public DiscreteProduct(string name, double price, double amount) : base(name, price, amount)
         {

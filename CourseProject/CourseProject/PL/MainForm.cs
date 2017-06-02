@@ -22,10 +22,29 @@ namespace CourseProject
             }
             else
             {
+                searchBindingSource.DataSource = null;
                 searchBindingSource.DataSource = shop.SearchResult;
             }
             searchDataGridView.ClearSelection();
             searchDataGridView.Refresh();
+        }
+
+        private void updateBasketBindingSource()
+        {
+            if (shop == null)
+            {
+                basketBindingSource.DataSource = null;
+            }
+            else
+            {
+                basketBindingSource.DataSource = null;
+                basketBindingSource.DataSource = shop.ProductBasket;
+            }
+            basketDataGridView.DataSource = basketBindingSource;
+            
+
+            basketDataGridView.ClearSelection();
+            basketDataGridView.Refresh();
         }
 
         private void closeWarning()
@@ -80,8 +99,16 @@ namespace CourseProject
             }
             else if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                shop = new Shop(saveFileDialog.FileName);
-                updateSearchBindingSource();
+                System.IO.File.Delete(saveFileDialog.FileName);
+                try
+                {
+                    shop = new Shop(saveFileDialog.FileName);
+                    updateSearchBindingSource();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -136,10 +163,10 @@ namespace CourseProject
         {
             if (shop != null && !shop.IsSaved)
             {
-                DialogResult dialogResult = MessageBox.Show("Внимание!",
-                    "Сохранить текущий файл перед выходом из программы?",
+                DialogResult dialogResult = MessageBox.Show(
+                    "Сохранить текущий файл перед выходом из программы?", "Внимание!",
                     MessageBoxButtons.YesNoCancel);
-                if (dialogResult == DialogResult.OK)
+                if (dialogResult == DialogResult.Yes)
                 {
                     shop.SaveChanges();
                 }
@@ -152,6 +179,16 @@ namespace CourseProject
 
         private void deleteProductToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (shop == null)
+            {
+                MessageBox.Show("Ни один файл не открыт.");
+                return;
+            }
+            if (!shop.IsBasketEmpty)
+            {
+                MessageBox.Show("Корзина покупок должна быть пуста!");
+                return;
+            }
             int index = searchDataGridView.CurrentRow.Index;
             if (index == -1)
             {
@@ -159,9 +196,11 @@ namespace CourseProject
             }
             else
             {
+                
                 DeleteForm deleteForm = new DeleteForm(shop.SearchResult[index].Amount, 
                     shop.SearchResult[index].Measure);
                 deleteForm.ShowDialog();
+                searchBindingSource.DataSource = null;
                 string name = shop.SearchResult[index].Name;
                 shop.DeleteFromStorage(name, deleteForm.Quantity);
                 updateSearchBindingSource();
@@ -190,6 +229,197 @@ namespace CourseProject
             if (e.KeyCode == Keys.Enter)
             {
                 searchButton.PerformClick();
+            }
+        }
+
+        private void addProductToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Ни один файл не открыт.");
+                return;
+            }
+            if (!shop.IsBasketEmpty)
+            {
+                MessageBox.Show("Корзина покупок должна быть пуста!");
+                return;
+            }
+            if (shop == null)
+            {
+                MessageBox.Show("Откройте файл, в который хотите добавить продукт.",
+                    "Внимание");
+            }
+            else
+            {
+                EditForm editForm = new EditForm();
+                editForm.ShowDialog();
+                if (editForm.InpName != "")
+                {
+                    shop.AddToStorage(editForm.InpName, editForm.InpPrice, editForm.InpAmount, editForm.InpMeasure, editForm.InpDeliveryDate);
+                }
+            }
+            updateSearchBindingSource();
+        }
+
+        private void editProductToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Ни один файл не открыт.");
+                return;
+            }
+            if (!shop.IsBasketEmpty)
+            {
+                MessageBox.Show("Корзина покупок должна быть пуста!");
+                return;
+            }
+            int index = searchDataGridView.CurrentRow.Index;
+            if (index == -1)
+            {
+                MessageBox.Show("Сначала выберите мышкой продукт, который хотите редактировать.");
+            }
+            else
+            {
+                string name = shop.SearchResult[index].Name;
+                string amountString = shop.SearchResult[index].FormattedAmount;
+                double amount = shop.SearchResult[index].Amount;
+                string price = shop.SearchResult[index].FormattedPrice;
+                string measure = shop.SearchResult[index].Measure;
+                string deliveryDate = shop.SearchResult[index].DeliveryDate;
+                EditForm editForm = new EditForm(name, amountString, price, measure, deliveryDate);
+                editForm.ShowDialog();
+                searchBindingSource.DataSource = null;
+                shop.DeleteFromStorage(name, amount);
+                shop.AddToStorage(editForm.InpName, editForm.InpPrice, editForm.InpAmount, editForm.InpMeasure, editForm.InpDeliveryDate);
+                updateSearchBindingSource();
+            }
+        }
+
+        private void addToBasketButton_Click(object sender, EventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Ни один файл не открыт.");
+                return;
+            }
+            int index = searchDataGridView.CurrentRow.Index;
+            if (index == -1)
+            {
+                MessageBox.Show("Сначала выберите мышкой продукт, который хотите добавить в корзину.");
+            }
+            else if (quantityTextBox.Text == "")
+            {
+                MessageBox.Show("Поле для ввода выбранного количества должно быть заполнено.");
+            }
+            else
+            {
+                string name = shop.SearchResult[index].Name;
+                Product productReference = null;
+
+                foreach (Product prod in shop.ProductFileStorage)
+                {
+                    if (prod.Name == name)
+                    {
+                        productReference = prod;
+                        break;
+                    }
+                }
+
+                double quantity = double.Parse(quantityTextBox.Text);
+                shop.AddToBasket(productReference, quantity);
+
+                updateSearchBindingSource();
+                updateBasketBindingSource();
+            }
+        }
+
+        private void searchDataGridView_Click(object sender, EventArgs e)
+        {
+            quantityTextBox.Text = "";
+        }
+
+        private void anullmentButton_Click(object sender, EventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Откройте файл и пополните корзину, чтобы ее очистить.");
+            }
+            else if (shop.ProductBasket == null || shop.ProductBasket.Count == 0)
+            {
+                MessageBox.Show("Корзина уже пуста!");
+            }
+            else
+            {
+                shop.Annulment();
+                updateBasketBindingSource();
+            }
+        }
+
+        private void createCheckButton_Click(object sender, EventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Откройте файл и добавьте продукты в корзину.");
+            }
+            else if (shop.ProductBasket == null || shop.ProductBasket.Count == 0)
+            {
+                MessageBox.Show("Ваша корзина пуста");
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    shop.CreateCheck(saveFileDialog.FileName);
+                    updateSearchBindingSource();
+                    updateBasketBindingSource();
+                }
+            }   
+        }
+
+        private void quantityTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (shop == null)
+            {
+                MessageBox.Show("Ни один файл не открыт.");
+                return;
+            }
+            int index = searchDataGridView.CurrentRow.Index;
+            double testAmount = -1;
+            string textError = "Введите число цифрами и, при надобности, точкой.";
+            try
+            {
+                testAmount = double.Parse(quantityTextBox.Text);
+            }
+            catch (Exception)
+            {
+                e.Cancel = true;
+            }
+            if (!e.Cancel)
+            {
+                if (testAmount < 0)
+                {
+                    e.Cancel = true;
+                    textError = "Число должно быть не меньше нуля.";
+                }
+                else if (testAmount > shop.SearchResult[index].Amount)
+                {
+                    e.Cancel = true;
+                    textError = "Введенное число больше количества доступных товаров.";
+                }
+            }
+            if (!e.Cancel)
+            {
+                textError = "Введите целое число.";
+                int n;
+                if (shop.SearchResult[index].Measure == "шт" && !int.TryParse(quantityTextBox.Text, out n))
+                    e.Cancel = true;
+            }
+            if (e.Cancel)
+            {
+                ErrorProvider errorProvider = new ErrorProvider();
+                errorProvider.SetError(quantityTextBox, textError);
             }
         }
     }

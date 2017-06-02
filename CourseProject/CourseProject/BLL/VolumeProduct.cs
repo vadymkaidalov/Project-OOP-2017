@@ -20,6 +20,14 @@ namespace CourseProject.BLL
             }
         }
 
+        public override bool IsDiscrete
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public VolumeProduct(string name, double price, double amount) : base(name, price, amount)
         {
 

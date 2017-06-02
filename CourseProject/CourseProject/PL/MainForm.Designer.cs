@@ -51,6 +51,11 @@
             this.basketTabPage = new System.Windows.Forms.TabPage();
             this.createCheckButton = new System.Windows.Forms.Button();
             this.basketDataGridView = new System.Windows.Forms.DataGridView();
+            this.quantityLabel = new System.Windows.Forms.Label();
+            this.quantityTextBox = new System.Windows.Forms.TextBox();
+            this.anullmentButton = new System.Windows.Forms.Button();
+            this.FormattedQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FormattedTotalSum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.measureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,8 +65,6 @@
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.basketBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.mainMenuStrip.SuspendLayout();
             this.mainTabControl.SuspendLayout();
@@ -152,12 +155,14 @@
             this.addProductToolStripMenuItem.Name = "addProductToolStripMenuItem";
             this.addProductToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.addProductToolStripMenuItem.Text = "Добавить продукт";
+            this.addProductToolStripMenuItem.Click += new System.EventHandler(this.addProductToolStripMenuItem_Click);
             // 
             // editProductToolStripMenuItem
             // 
             this.editProductToolStripMenuItem.Name = "editProductToolStripMenuItem";
             this.editProductToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.editProductToolStripMenuItem.Text = "Редактировать продукт";
+            this.editProductToolStripMenuItem.Click += new System.EventHandler(this.editProductToolStripMenuItem_Click);
             // 
             // deleteProductToolStripMenuItem
             // 
@@ -178,6 +183,8 @@
             // 
             // productsTabPage
             // 
+            this.productsTabPage.Controls.Add(this.quantityTextBox);
+            this.productsTabPage.Controls.Add(this.quantityLabel);
             this.productsTabPage.Controls.Add(this.addToBasketButton);
             this.productsTabPage.Controls.Add(this.searchDataGridView);
             this.productsTabPage.Controls.Add(this.searchButton);
@@ -193,12 +200,13 @@
             // 
             // addToBasketButton
             // 
-            this.addToBasketButton.Location = new System.Drawing.Point(8, 484);
+            this.addToBasketButton.Location = new System.Drawing.Point(359, 484);
             this.addToBasketButton.Name = "addToBasketButton";
-            this.addToBasketButton.Size = new System.Drawing.Size(741, 23);
+            this.addToBasketButton.Size = new System.Drawing.Size(390, 23);
             this.addToBasketButton.TabIndex = 4;
             this.addToBasketButton.Text = "Добавить в корзину";
             this.addToBasketButton.UseVisualStyleBackColor = true;
+            this.addToBasketButton.Click += new System.EventHandler(this.addToBasketButton_Click);
             // 
             // searchDataGridView
             // 
@@ -224,6 +232,7 @@
             this.searchDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.searchDataGridView.Size = new System.Drawing.Size(741, 445);
             this.searchDataGridView.TabIndex = 3;
+            this.searchDataGridView.Click += new System.EventHandler(this.searchDataGridView_Click);
             // 
             // searchButton
             // 
@@ -254,6 +263,7 @@
             // 
             // basketTabPage
             // 
+            this.basketTabPage.Controls.Add(this.anullmentButton);
             this.basketTabPage.Controls.Add(this.createCheckButton);
             this.basketTabPage.Controls.Add(this.basketDataGridView);
             this.basketTabPage.Location = new System.Drawing.Point(4, 22);
@@ -266,12 +276,13 @@
             // 
             // createCheckButton
             // 
-            this.createCheckButton.Location = new System.Drawing.Point(7, 484);
+            this.createCheckButton.Location = new System.Drawing.Point(358, 484);
             this.createCheckButton.Name = "createCheckButton";
-            this.createCheckButton.Size = new System.Drawing.Size(741, 23);
+            this.createCheckButton.Size = new System.Drawing.Size(390, 23);
             this.createCheckButton.TabIndex = 5;
             this.createCheckButton.Text = "Оформить чек";
             this.createCheckButton.UseVisualStyleBackColor = true;
+            this.createCheckButton.Click += new System.EventHandler(this.createCheckButton_Click);
             // 
             // basketDataGridView
             // 
@@ -287,8 +298,8 @@
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
+            this.FormattedQuantity,
+            this.FormattedTotalSum});
             this.basketDataGridView.DataSource = this.basketBindingSource;
             this.basketDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.basketDataGridView.Location = new System.Drawing.Point(7, 6);
@@ -296,6 +307,47 @@
             this.basketDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.basketDataGridView.Size = new System.Drawing.Size(741, 472);
             this.basketDataGridView.TabIndex = 4;
+            // 
+            // quantityLabel
+            // 
+            this.quantityLabel.AutoSize = true;
+            this.quantityLabel.Location = new System.Drawing.Point(12, 487);
+            this.quantityLabel.Name = "quantityLabel";
+            this.quantityLabel.Size = new System.Drawing.Size(128, 13);
+            this.quantityLabel.TabIndex = 5;
+            this.quantityLabel.Text = "Выбранное количество:";
+            // 
+            // quantityTextBox
+            // 
+            this.quantityTextBox.Location = new System.Drawing.Point(137, 484);
+            this.quantityTextBox.Name = "quantityTextBox";
+            this.quantityTextBox.Size = new System.Drawing.Size(184, 20);
+            this.quantityTextBox.TabIndex = 6;
+            this.quantityTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.quantityTextBox_Validating);
+            // 
+            // anullmentButton
+            // 
+            this.anullmentButton.Location = new System.Drawing.Point(7, 484);
+            this.anullmentButton.Name = "anullmentButton";
+            this.anullmentButton.Size = new System.Drawing.Size(345, 23);
+            this.anullmentButton.TabIndex = 6;
+            this.anullmentButton.Text = "Аннуляция";
+            this.anullmentButton.UseVisualStyleBackColor = true;
+            this.anullmentButton.Click += new System.EventHandler(this.anullmentButton_Click);
+            // 
+            // FormattedQuantity
+            // 
+            this.FormattedQuantity.DataPropertyName = "FormattedQuantity";
+            this.FormattedQuantity.HeaderText = "Количество";
+            this.FormattedQuantity.Name = "FormattedQuantity";
+            this.FormattedQuantity.ReadOnly = true;
+            // 
+            // FormattedTotalSum
+            // 
+            this.FormattedTotalSum.DataPropertyName = "FormattedTotalSum";
+            this.FormattedTotalSum.HeaderText = "Сумма";
+            this.FormattedTotalSum.Name = "FormattedTotalSum";
+            this.FormattedTotalSum.ReadOnly = true;
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -313,9 +365,10 @@
             // 
             // priceDataGridViewTextBoxColumn
             // 
-            this.priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
+            this.priceDataGridViewTextBoxColumn.DataPropertyName = "FormattedPrice";
             this.priceDataGridViewTextBoxColumn.HeaderText = "Цена";
             this.priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
+            this.priceDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // formattedAmountDataGridViewTextBoxColumn
             // 
@@ -341,6 +394,7 @@
             this.dataGridViewTextBoxColumn1.DataPropertyName = "Name";
             this.dataGridViewTextBoxColumn1.HeaderText = "Наименование";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn2
             // 
@@ -348,30 +402,18 @@
             this.dataGridViewTextBoxColumn2.HeaderText = "Мера";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Width = 50;
             // 
             // dataGridViewTextBoxColumn3
             // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Price";
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "FormattedPrice";
             this.dataGridViewTextBoxColumn3.HeaderText = "Цена";
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "FormattedAmount";
-            this.dataGridViewTextBoxColumn4.HeaderText = "Количество";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "DeliveryDate";
-            this.dataGridViewTextBoxColumn5.HeaderText = "Время завоза";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.Width = 140;
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
             // 
             // basketBindingSource
             // 
-            this.basketBindingSource.DataSource = typeof(CourseProject.BLL.ProductList);
+            this.basketBindingSource.DataSource = typeof(CourseProject.BLL.PurchaseList);
             // 
             // MainForm
             // 
@@ -431,11 +473,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn formattedAmountDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn deliveryDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.TextBox quantityTextBox;
+        private System.Windows.Forms.Label quantityLabel;
+        private System.Windows.Forms.Button anullmentButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FormattedQuantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FormattedTotalSum;
     }
 }
 

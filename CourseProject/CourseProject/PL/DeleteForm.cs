@@ -13,14 +13,12 @@ namespace CourseProject.PL
     public partial class DeleteForm : Form
     {
         public double Quantity { get; private set; }
-        public Control AuthorBox { get; private set; }
 
         private double amount;
 
         public DeleteForm(double amount, string measure)
         {
             InitializeComponent();
-            AuthorBox = this.quantityTextBox;
             this.amount = amount;
             measureLabel.Text = measure;
             Quantity = 0;
@@ -65,7 +63,7 @@ namespace CourseProject.PL
             if (e.Cancel)
             {
                 ErrorProvider errorProvider = new ErrorProvider();
-                errorProvider.SetError(AuthorBox, textError);
+                errorProvider.SetError(quantityTextBox, textError);
             }   
         }
     }

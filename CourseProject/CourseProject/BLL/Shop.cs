@@ -6,23 +6,43 @@ namespace CourseProject.BLL
     class Shop
     {
         public ProductList ProductFileStorage;
-        public ProductList ProductBasket;
+        public PurchaseList ProductBasket;
         public ProductList SearchResult;
         public string FileName;
 
-        public bool IsSaved { get; set; }
+        public bool IsSaved { get; private set; }
+
+        public bool IsBasketEmpty { get; private set; }
 
         public Shop(string fileName)
         {
-            if (new FileInfo(fileName).Length == 0)
+            if (!File.Exists(fileName) || new FileInfo(fileName).Length == 0)
             {
                 DataAccess.WriteFile(fileName, new ProductList());
             }
             ProductFileStorage = DataAccess.ReadFile(fileName);
-            ProductBasket = new ProductList();
+            ProductBasket = new PurchaseList();
             SearchResult = ProductFileStorage;
             IsSaved = true;
+            IsBasketEmpty = true;
             FileName = fileName;
+        }
+
+        public void AddToStorage(string name, double price, double amount, string measure, string deliveryDate)
+        {
+            if (measure == "кг")
+            {
+                ProductFileStorage.Add(new WeightProduct(name, price, amount, deliveryDate));
+            }
+            else if (measure == "шт")
+            {
+                ProductFileStorage.Add(new DiscreteProduct(name, price, amount, deliveryDate));
+            }
+            else
+            {
+                ProductFileStorage.Add(new VolumeProduct(name, price, amount, deliveryDate));
+            }
+            IsSaved = false;
         }
 
         public bool Search(string key)
@@ -72,6 +92,40 @@ namespace CourseProject.BLL
         {
             DataAccess.WriteFile(FileName, ProductFileStorage);
             IsSaved = true;
+        }
+
+        public void AddToBasket(Product product, double quantity)
+        {
+            foreach (Purchase item in ProductBasket)
+            {
+                if (item.Name == product.Name)
+                {
+                    item.Quantity = quantity;
+                    return;
+                }
+            }
+
+            ProductBasket.Add(new Purchase(product, quantity));
+            IsBasketEmpty = false;
+        }
+
+        public void Annulment()
+        {
+            ProductBasket = new PurchaseList();
+            IsBasketEmpty = true;
+        }
+
+        public void CreateCheck(string fileName)
+        {
+            DataAccess.WriteFile(fileName, ProductBasket);
+
+            foreach (Purchase purchase in ProductBasket)
+            {
+                DeleteFromStorage(purchase.Name, purchase.Quantity);
+            }
+
+            SaveChanges();
+            Annulment();
         }
     }
 }

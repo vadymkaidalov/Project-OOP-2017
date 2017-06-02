@@ -47,7 +47,6 @@ namespace CourseProject.DAL
             }
             catch (Exception ex)
             {
-                throw ex;
                 string message = String.Format("Файл {0} находится в неправильном формате и не может быть прочтен.",
                     fileName);
                 throw new ApplicationException(message, ex);
@@ -66,6 +65,18 @@ namespace CourseProject.DAL
             }
         }
 
-
+        public static void WriteFile(string fileName, PurchaseList purchaseList)
+        {
+            using (TextWriter writer = new StreamWriter(fileName))
+            {
+                writer.WriteLine("Время покупки: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+                writer.WriteLine(String.Format("{0,-30}{1,-10}{2,-10}{3,-10}", "Наименование", "Цена", "Кол-во", "Сумма"));
+                foreach (Purchase purchase in purchaseList)
+                {
+                    writer.WriteLine(purchase.ToString());
+                }
+                writer.WriteLine(String.Format("{0,-50}{1,-10}", "Итого:", purchaseList.FormattedCheckSum));
+            }
+        }
     }
 }

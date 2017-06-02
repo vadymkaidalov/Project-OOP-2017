@@ -49,6 +49,8 @@
     <Compile Include="BLL\DiscreteProduct.cs" />
     <Compile Include="BLL\Product.cs" />
     <Compile Include="BLL\ProductList.cs" />
+    <Compile Include="BLL\Purchase.cs" />
+    <Compile Include="BLL\PurchaseList.cs" />
     <Compile Include="BLL\Shop.cs" />
     <Compile Include="BLL\VolumeProduct.cs" />
     <Compile Include="BLL\WeightProduct.cs" />
@@ -92,6 +94,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="Properties\DataSources\CourseProject.BLL.ProductList.datasource" />
+    <None Include="Properties\DataSources\CourseProject.BLL.PurchaseList.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

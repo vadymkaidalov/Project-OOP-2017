@@ -35,7 +35,17 @@ namespace CourseProject.BLL
 
         public abstract string FormattedAmount { get; }
 
+        public string FormattedPrice
+        {
+            get
+            {
+                return String.Format("{0:0.00}", Price);
+            }
+        }
+
         public abstract string Measure { get; }
+
+        public abstract bool IsDiscrete { get; }
 
         public Product(string name, double price, double amount)
         {
@@ -43,7 +53,7 @@ namespace CourseProject.BLL
             this.price = price;
 
             DateTime localDate = DateTime.Now;
-            deliveryDate = localDate.ToString("ru-RU");
+            deliveryDate = localDate.ToString("dd/MM/yyyy HH:mm:ss");
 
             this.amount = amount;
         }

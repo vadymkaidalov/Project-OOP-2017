@@ -12,6 +12,14 @@ namespace CourseProject.BLL
             }
         }
 
+        public override bool IsDiscrete
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override string Measure
         {
             get
