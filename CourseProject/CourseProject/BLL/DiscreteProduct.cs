@@ -4,6 +4,18 @@ namespace CourseProject.BLL
 {
     class DiscreteProduct : Product
     {
+        public DiscreteProduct(string name, double price, double amount) 
+            : base(name, price, amount)
+        {
+
+        }
+
+        public DiscreteProduct(string nm, double pr, double amt, string date) 
+            : base(nm, pr, amt, date)
+        {
+
+        }
+
         public override string FormattedAmount
         {
             get
@@ -26,16 +38,6 @@ namespace CourseProject.BLL
             {
                 return true;
             }
-        }
-
-        public DiscreteProduct(string name, double price, double amount) : base(name, price, amount)
-        {
-
-        }
-
-        public DiscreteProduct(string name, double price, double amount, string deliveryDate) : base(name, price, amount, deliveryDate)
-        {
-
         }
     }
 }

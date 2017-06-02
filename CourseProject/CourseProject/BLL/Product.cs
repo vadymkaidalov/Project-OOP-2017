@@ -8,7 +8,25 @@ namespace CourseProject.BLL
         private double price;
         private string deliveryDate;
         private double amount;
-        
+
+        public Product(string name, double price, double amount)
+        {
+            DateTime localDate = DateTime.Now;
+
+            this.name = name;
+            this.price = price;
+            deliveryDate = localDate.ToString(StringConstant.DateParseFormat);
+            this.amount = amount;
+        }
+
+        public Product(string name, double price, double amount, string date)
+        {
+            this.name = name;
+            this.price = price;
+            this.amount = amount;
+            this.deliveryDate = date;
+        }
+
         public string Name
         {
             get { return name; }
@@ -33,8 +51,6 @@ namespace CourseProject.BLL
             set { amount = value; }
         }
 
-        public abstract string FormattedAmount { get; }
-
         public string FormattedPrice
         {
             get
@@ -43,28 +59,11 @@ namespace CourseProject.BLL
             }
         }
 
+        public abstract string FormattedAmount { get; }
+
         public abstract string Measure { get; }
 
         public abstract bool IsDiscrete { get; }
-
-        public Product(string name, double price, double amount)
-        {
-            this.name = name;
-            this.price = price;
-
-            DateTime localDate = DateTime.Now;
-            deliveryDate = localDate.ToString("dd/MM/yyyy HH:mm:ss");
-
-            this.amount = amount;
-        }
-
-        public Product (string name, double price, double amount, string deliveryDate)
-        {
-            this.name = name;
-            this.price = price;
-            this.amount = amount;
-            this.deliveryDate = deliveryDate;
-        }
 
         public override string ToString()
         {

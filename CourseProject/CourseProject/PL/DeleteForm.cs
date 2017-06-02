@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CourseProject.PL
 {
     public partial class DeleteForm : Form
     {
-        public double Quantity { get; private set; }
-
         private double amount;
 
         public DeleteForm(double amount, string measure)
@@ -24,6 +16,8 @@ namespace CourseProject.PL
             Quantity = 0;
         }
 
+        public double Quantity { get; private set; }
+        
         private void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
@@ -35,11 +29,12 @@ namespace CourseProject.PL
             Close();
         }
 
-        private void quantityTextBox_Validating(object sender, CancelEventArgs e)
+        private void quantityTextBox_Validating(object sender, 
+                                                CancelEventArgs e)
         {
-            
             double testNumber = -1;
-            string textError = "Неправильный формат ввода.";
+            string textError = StringConstant.IncorrectInput;
+
             try
             {
                 testNumber = Double.Parse(quantityTextBox.Text);
@@ -50,15 +45,22 @@ namespace CourseProject.PL
             }
             if (!e.Cancel)
             {
-                textError = "Число должно быть не меньше нуля и не больше доступ. кол-ва.";
-                if (testNumber < 0 || testNumber > amount) e.Cancel = true;
+                textError = StringConstant.OutOfBounds;
+                if (testNumber < 0 || testNumber > amount)
+                {
+                    e.Cancel = true;
+                }   
             }
             if (!e.Cancel)
             {
-                textError = "Введите целое число.";
+                textError = StringConstant.NotInteger;
                 int n;
-                if (measureLabel.Text == "шт" && !int.TryParse(quantityTextBox.Text, out n))
+                bool notInteger = !int.TryParse(quantityTextBox.Text, out n);
+
+                if (measureLabel.Text == StringConstant.Item && notInteger)
+                {
                     e.Cancel = true;
+                }
             }
             if (e.Cancel)
             {

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourseProject.BLL
 {
@@ -13,7 +10,8 @@ namespace CourseProject.BLL
             get
             {
                 double sum = 0;
-                foreach(Purchase purchase in this)
+
+                foreach (Purchase purchase in this)
                 {
                     sum += purchase.Price * purchase.Quantity;
                 }

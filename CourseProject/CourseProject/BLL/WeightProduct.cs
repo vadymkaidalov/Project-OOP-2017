@@ -4,6 +4,18 @@ namespace CourseProject.BLL
 {
     class WeightProduct : Product
     {
+        public WeightProduct(string name, double price, double amount) 
+            : base(name, price, amount)
+        {
+
+        }
+
+        public WeightProduct(string name, double pr, double amt, string date) 
+            : base(name, pr, amt, date)
+        {
+
+        }
+
         public override string FormattedAmount
         {
             get
@@ -26,16 +38,6 @@ namespace CourseProject.BLL
             {
                 return "кг";
             }
-        }
-
-        public WeightProduct(string name, double price, double amount) : base(name, price, amount)
-        {
-
-        }
-
-        public WeightProduct(string name, double price, double amount, string deliveryDate) : base(name, price, amount, deliveryDate)
-        {
-
         }
     }
 }

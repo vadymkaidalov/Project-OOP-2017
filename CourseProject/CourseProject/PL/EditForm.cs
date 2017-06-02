@@ -1,12 +1,5 @@
-﻿using CourseProject.BLL;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CourseProject.PL
@@ -24,21 +17,22 @@ namespace CourseProject.PL
             InitializeComponent();
             measureComboBox.SelectedIndex = 0;
             deliveryDateTimePicker.Value = DateTime.Now;
-            InpName = "";
-            measureComboBox.SelectedValue = "шт";
+            InpName = String.Empty;
+            measureComboBox.SelectedValue = StringConstant.Item;
         }
 
-        public EditForm(string name, string amount, string price, string measure, string deliveryDate)
+        public EditForm(string name, string amount, string price, 
+            string measure, string deliveryDate)
         {
             InitializeComponent();
             nameTextBox.Text = name;
             amountTextBox.Text = amount;
             priceTextBox.Text = price;
-            if (measure == "шт")
+            if (measure == StringConstant.Item)
             {
                 measureComboBox.SelectedIndex = 0;
             }
-            else if (measure == "кг")
+            else if (measure == StringConstant.Kilo)
             {
                 measureComboBox.SelectedIndex = 1;
             }
@@ -46,14 +40,15 @@ namespace CourseProject.PL
             {
                 measureComboBox.SelectedIndex = 2;
             }
-            deliveryDateTimePicker.Value = DateTime.ParseExact(deliveryDate, "dd/MM/yyyy HH:mm:ss",
-                            System.Globalization.CultureInfo.InvariantCulture);
+            deliveryDateTimePicker.Value = DateTime.ParseExact(
+                deliveryDate, StringConstant.DateParseFormat,
+                System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private void nameTextBox_Validating(object sender, CancelEventArgs e)
         {
             string testName = nameTextBox.Text;
-            string textError = "Длина строки должна быть не меньше одного символа.";
+            string textError = StringConstant.ZeroStringLength;
 
             if (testName.Length < 1)
             {
@@ -62,7 +57,7 @@ namespace CourseProject.PL
             else if (testName.Length > 30)
             {
                 e.Cancel = true;
-                textError = "Длина строки должна быть не больше 30 символов.";
+                textError = StringConstant.TooLargeString;
             }
 
             if (e.Cancel)
@@ -75,7 +70,7 @@ namespace CourseProject.PL
         private void amountTextBox_Validating(object sender, CancelEventArgs e)
         {
             double testAmount = -1;
-            string textError = "Введите число цифрами и, при надобности, точкой.";
+            string textError = StringConstant.IncorrectInput;
             try
             {
                 testAmount = double.Parse(amountTextBox.Text);
@@ -86,22 +81,18 @@ namespace CourseProject.PL
             }
             if (!e.Cancel)
             {
-                if (testAmount < 0)
+                if (testAmount < 0 || testAmount > 1000000)
                 {
                     e.Cancel = true;
-                    textError = "Число должно быть не меньше нуля.";
-                }
-                else if (testAmount > 1000000)
-                {
-                    e.Cancel = true;
-                    textError = "Введите число поменьше";
+                    textError = StringConstant.OutOfBounds;
                 }
             }
             if (!e.Cancel)
             {
-                textError = "Введите целое число.";
+                textError = StringConstant.NotInteger;
                 int n;
-                if (measureComboBox.SelectedIndex == 0 && !int.TryParse(amountTextBox.Text, out n))
+                bool notInteger = !int.TryParse(amountTextBox.Text, out n);
+                if (measureComboBox.SelectedIndex == 0 && notInteger)
                     e.Cancel = true;
             }
             if (e.Cancel)
@@ -114,7 +105,8 @@ namespace CourseProject.PL
         private void priceTextBox_Validating(object sender, CancelEventArgs e)
         {
             double testPrice = -1;
-            string textError = "Введите число с плавающей точкой.";
+            string textError = StringConstant.IncorrectInput;
+
             try
             {
                 testPrice = double.Parse(priceTextBox.Text);
@@ -125,10 +117,12 @@ namespace CourseProject.PL
             }
             if (!e.Cancel)
             {
-                if (priceTextBox.Text.IndexOf('.') != priceTextBox.Text.Length - 3)
+                int dotIndex = priceTextBox.Text.Length - 3;
+
+                if (priceTextBox.Text.IndexOf('.') != dotIndex)
                 {
                     e.Cancel = true;
-                    textError = "Цена должна быть с двумя разрядами после плавающей точки.";
+                    textError = StringConstant.NotFinancialFormat;
                 }
             }
             if (e.Cancel)
@@ -138,19 +132,22 @@ namespace CourseProject.PL
             }
         }
 
-        private void measureComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void measureComboBox_SelectedIndexChanged(object sender, 
+            EventArgs e)
         {
             amountTextBox.Focus();
         }
 
-        private void autoDateRadioButton_MouseClick(object sender, MouseEventArgs e)
+        private void autoDateRadioButton_MouseClick(object sender, 
+            MouseEventArgs e)
         {
             deliveryDateTimePicker.Value = DateTime.Now;
             deliveryDateTimePicker.Enabled = false;
             customDateRadioButton.Checked = false;
         }
 
-        private void customDateRadioButton_MouseClick(object sender, MouseEventArgs e)
+        private void customDateRadioButton_MouseClick(object sender, 
+            MouseEventArgs e)
         {
             deliveryDateTimePicker.Enabled = true;
             autoDateRadioButton.Checked = false;
@@ -161,16 +158,20 @@ namespace CourseProject.PL
             string name = nameTextBox.Text;
             string amountString = amountTextBox.Text;
             string priceString = priceTextBox.Text;
-            if (name == "" || amountString == "" || priceString == "")
+
+            if (name == String.Empty 
+                || amountString == String.Empty 
+                || priceString == String.Empty)
             {
-                MessageBox.Show("Заполните все поля, пожалуйста.");
+                MessageBox.Show(StringConstant.NotAllFields);
                 return;
             }
             InpName = name;
             InpPrice = double.Parse(priceString);
             InpAmount = double.Parse(amountString);
             InpMeasure = measureComboBox.Items[measureComboBox.SelectedIndex].ToString();
-            InpDeliveryDate = deliveryDateTimePicker.Value.ToString("dd/MM/yyyy HH:mm:ss");
+            InpDeliveryDate = deliveryDateTimePicker.Value.ToString(
+                StringConstant.DateParseFormat);
             Close();
         }
     }

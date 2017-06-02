@@ -5,42 +5,56 @@ namespace CourseProject.BLL
 {
     class Shop
     {
-        public ProductList ProductFileStorage;
-        public PurchaseList ProductBasket;
-        public ProductList SearchResult;
-        public string FileName;
-
-        public bool IsSaved { get; private set; }
-
-        public bool IsBasketEmpty { get; private set; }
-
+        private string fileName;
+        private ProductList productFileStorage;
+        
         public Shop(string fileName)
         {
             if (!File.Exists(fileName) || new FileInfo(fileName).Length == 0)
             {
                 DataAccess.WriteFile(fileName, new ProductList());
             }
-            ProductFileStorage = DataAccess.ReadFile(fileName);
+            productFileStorage = DataAccess.ReadFile(fileName);
             ProductBasket = new PurchaseList();
-            SearchResult = ProductFileStorage;
+            SearchResult = productFileStorage;
             IsSaved = true;
-            IsBasketEmpty = true;
-            FileName = fileName;
+            this.fileName = fileName;
         }
 
-        public void AddToStorage(string name, double price, double amount, string measure, string deliveryDate)
+        public PurchaseList ProductBasket { get; private set; }
+
+        public ProductList SearchResult { get; private set; }
+
+        public bool IsSaved { get; private set; }
+
+        public bool IsBasketEmpty
+        {
+            get
+            {
+                return ProductBasket == null || ProductBasket.Count == 0;
+            }
+        }
+
+        public void AddToStorage(string name, double price, double amount, 
+                                        string measure, string deliveryDate)
         {
             if (measure == "кг")
             {
-                ProductFileStorage.Add(new WeightProduct(name, price, amount, deliveryDate));
+                productFileStorage.Add(
+                    new WeightProduct(
+                        name, price, amount, deliveryDate));
             }
             else if (measure == "шт")
             {
-                ProductFileStorage.Add(new DiscreteProduct(name, price, amount, deliveryDate));
+                productFileStorage.Add(
+                    new DiscreteProduct(
+                        name, price, amount, deliveryDate));
             }
             else
             {
-                ProductFileStorage.Add(new VolumeProduct(name, price, amount, deliveryDate));
+                productFileStorage.Add(
+                    new VolumeProduct(
+                        name, price, amount, deliveryDate));
             }
             IsSaved = false;
         }
@@ -49,12 +63,12 @@ namespace CourseProject.BLL
         {
             if (key == "")
             {
-                SearchResult = ProductFileStorage;
+                SearchResult = productFileStorage;
             }
             else
             {
                 SearchResult = new ProductList();
-                foreach (Product product in ProductFileStorage)
+                foreach (Product product in productFileStorage)
                 {
                     if ((product.Name.ToLower()).Contains(key.ToLower()))
                     {
@@ -69,28 +83,41 @@ namespace CourseProject.BLL
             return false;
         }
 
+        public Product SearchForName(string name)
+        {
+            foreach (Product prod in productFileStorage)
+            {
+                if (prod.Name == name)
+                {
+                    return prod;
+                }
+            }
+            return null;
+        }
+
         public void DeleteFromStorage(string name, double quantity)
         {
             int index;
-            for (index = 0; index < ProductFileStorage.Count; index++)
+
+            for (index = 0; index < productFileStorage.Count; index++)
             {
-                if (ProductFileStorage[index].Name == name) break;
+                if (productFileStorage[index].Name == name) break;
             }
-            if (index < ProductFileStorage.Count)
+            if (index < productFileStorage.Count)
             {
-                ProductFileStorage[index].Amount -= quantity;
-                if (ProductFileStorage[index].Amount <= 0)
+                productFileStorage[index].Amount -= quantity;
+                if (productFileStorage[index].Amount <= 0)
                 {
-                    ProductFileStorage.RemoveAt(index);
+                    productFileStorage.RemoveAt(index);
                 }
             }
-            SearchResult = ProductFileStorage;
+            SearchResult = productFileStorage;
             IsSaved = false;
         }
 
         public void SaveChanges()
         {
-            DataAccess.WriteFile(FileName, ProductFileStorage);
+            DataAccess.WriteFile(fileName, productFileStorage);
             IsSaved = true;
         }
 
@@ -106,13 +133,11 @@ namespace CourseProject.BLL
             }
 
             ProductBasket.Add(new Purchase(product, quantity));
-            IsBasketEmpty = false;
         }
 
         public void Annulment()
         {
             ProductBasket = new PurchaseList();
-            IsBasketEmpty = true;
         }
 
         public void CreateCheck(string fileName)
